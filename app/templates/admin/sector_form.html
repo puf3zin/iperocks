@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{% if edit %}Edit{% else %}New{% endif %} Sector</h2>
+  <form method="POST">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" name="name" value="{{ sector.name if edit else '' }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" name="description">{{ sector.description if edit else '' }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">{% if edit %}Update{% else %}Create{% endif %} Sector</button>
+  </form>
+{% endblock %}

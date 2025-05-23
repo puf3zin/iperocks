@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil de {{ user.username }}{% endblock %}
+
+{% block head %}
+<link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Perfil de {{ user.username }}</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Estatísticas</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Total de Tentativas:</strong> {{ attempts|length }}</li>
+                        <li><strong>Cadenas:</strong> {{ sent_boulders|length }}</li>
+                        <li><strong>Flashes:</strong> {{ flashes|length }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Cadenas</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="sentBouldersTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Grau</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Avaliação</th>
+                            <th>Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in sent_boulders %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('public.boulder_detail', boulder_id=attempt.boulder.id) }}">
+                                    {{ attempt.boulder.name }}
+                                </a>
+                            </td>
+                            <td>{{ attempt.boulder.grade }}</td>
+                            <td>{{ attempt.datetime.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if attempt.status == 'Cadena' %}
+                                    <span class="badge bg-success">Cadena</span>
+                                {% elif attempt.status == 'Flash' %}
+                                    <span class="badge bg-info">Flash</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if attempt.rating %}
+                                    {% for i in range(attempt.rating) %}★{% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>{{ attempt.notes }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Tentativas</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="attemptsTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Grau</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Avaliação</th>
+                            <th>Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('public.boulder_detail', boulder_id=attempt.boulder.id) }}">
+                                    {{ attempt.boulder.name }}
+                                </a>
+                            </td>
+                            <td>{{ attempt.boulder.grade }}</td>
+                            <td>{{ attempt.datetime.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if attempt.status == 'Tentativa' %}
+                                    <span class="badge bg-warning">Tentativa</span>
+                                {% elif attempt.status == 'Cadena' %}
+                                    <span class="badge bg-success">Cadena</span>
+                                {% elif attempt.status == 'Flash' %}
+                                    <span class="badge bg-info">Flash</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if attempt.rating %}
+                                    {% for i in range(attempt.rating) %}★{% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>{{ attempt.notes }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#sentBouldersTable').DataTable({
+        order: [[2, 'desc']], // Sort by date by default
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+        }
+    });
+    
+    $('#attemptsTable').DataTable({
+        order: [[2, 'desc']], // Sort by date by default
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+        }
+    });
+});
+</script>
+{% endblock %}

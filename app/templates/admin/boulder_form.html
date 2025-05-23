@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{% if edit %}Edit{% else %}New{% endif %} Boulder</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" name="name" value="{{ boulder.name if edit else '' }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" name="description">{{ boulder.description if edit else '' }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label for="grade" class="form-label">Grade: <span id="gradeValue">V{{ boulder.grade if boulder and boulder.grade else '0' }}</span></label>
+      <input type="range" class="form-range" min="0" max="17" step="1" 
+             name="grade" id="grade" 
+             value="{{ boulder.grade[1:] if boulder and boulder.grade else '0' }}"
+             oninput="updateGradeLabel(this.value)">
+    </div>
+    <div class="mb-3">
+      <label for="block_id" class="form-label">Block</label>
+      <select class="form-select" name="block_id" required>
+        {% for block in blocks %}
+          <option value="{{ block.id }}"
+            {% if edit and boulder.block_id == block.id %}selected{% endif %}>
+            {{ block.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="tags" class="form-label">Tags</label>
+      <select class="form-select" name="tags" id="tags" multiple>
+        {% for tag in tags %}
+          <option value="{{ tag.id }}"
+            {% if edit and boulder.tags and (tag in boulder.tags) %}selected{% endif %}>
+            {{ tag.name }}
+          </option>
+        {% endfor %}
+      </select>
+      <div class="form-text">Hold Ctrl (Windows) or Cmd (Mac) to select multiple tags.</div>
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Image</label>
+      <input type="file" class="form-control" name="image" accept="image/*">
+      {% if edit and boulder.image_path %}
+        <div class="mt-2">
+          <img src="{{ url_for('static', filename='uploads/' + boulder.image_path) }}" style="max-width:200px;" alt="Current image">
+        </div>
+      {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">{% if edit %}Update{% else %}Create{% endif %} Boulder</button>
+  </form>
+  <script>
+    function updateGradeLabel(val) {
+      document.getElementById('gradeValue').innerText = 'V' + val;
+    }
+    // Set initial value on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      var slider = document.getElementById('grade');
+      updateGradeLabel(slider.value);
+    });
+  </script>
+{% endblock %}

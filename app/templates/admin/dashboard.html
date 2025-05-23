@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Admin Dashboard</h2>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.sectors_table') }}">Gerenciar Setores</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.blocks_table') }}">Gerenciar Blocos</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.boulders_table') }}">Gerenciar Boulders</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.import_boulders') }}">Importar Boulders por CSV</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.tags_table') }}">Gerenciar Tags</a>
+    </li>
+  </ul>
+  <hr>
+  <ul class="list-group mt-3">
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.create_sector') }}">Adicionar Setor</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.create_block') }}">Adicionar Bloco</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.create_boulder') }}">Adicionar Boulder</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.create_tag') }}">Adicionar Tag</a>
+    </li>
+  </ul>
+{% endblock %}

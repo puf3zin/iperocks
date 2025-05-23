@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>Boulders</h2>
+    
+    <div class="mb-3">
+        <a href="{{ url_for('admin.create_boulder') }}" class="btn btn-success">Add Boulder</a>
+        <a href="{{ url_for('admin.import_boulders') }}" class="btn btn-primary">Import from CSV</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Block</th>
+                    <th>Grade</th>
+                    <th>Description</th>
+                    <th>Tags</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for boulder in boulders %}
+                <tr>
+                    <td>{{ boulder.name }}</td>
+                    <td>{{ boulder.block.name }}</td>
+                    <td>{{ boulder.grade }}</td>
+                    <td>{{ boulder.description }}</td>
+                    <td>
+                        {% for tag in boulder.tags %}
+                            <span class="badge bg-info text-dark">{{ tag.name }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_boulder', boulder_id=boulder.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{{ url_for('admin.delete_boulder', boulder_id=boulder.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this boulder?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

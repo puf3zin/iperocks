@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Setores{% endblock %}
+
+{% block content %}
+<h1>Setores</h1>
+<div class="row">
+    {% for sector in sectors %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            {% if sector.image %}
+            <img src="{{ url_for('static', filename=sector.image) }}" class="card-img-top" alt="{{ sector.name }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ sector.name }}</h5>
+                <p class="card-text">{{ sector.description }}</p>
+                <a href="{{ url_for('public.sector_detail', sector_id=sector.id) }}" class="btn btn-primary">Ver Blocos</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

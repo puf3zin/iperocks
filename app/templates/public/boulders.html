@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Boulders{% endblock %}
+
+{% block head %}
+<!-- Add DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<style>
+    .dataTables_filter input {
+        width: 300px !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">All Boulders</h1>
+    
+    <div class="table-responsive">
+        <table id="bouldersTable" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Grau</th>
+                    <th>Bloco</th>
+                    <th>Setor</th>
+                    <th>Tags</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for boulder in boulders %}
+                <tr>
+                    <td>{{ boulder.name }}</td>
+                    <td>{{ boulder.grade }}</td>
+                    <td>{{ boulder.block.name }}</td>
+                    <td>{{ boulder.block.sector.name }}</td>
+                    <td>
+                        {% for tag in boulder.tags %}
+                        <span class="badge bg-primary">{{ tag.name }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('public.boulder_detail', boulder_id=boulder.id) }}" class="btn btn-primary">Ver</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Add jQuery and DataTables JS -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+// Custom sorting function for climbing grades
+jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+    "climbing-grade-pre": function(a) {
+        if (a === 'P') return 99;  // P is the highest grade
+        return parseInt(a.replace('V', ''));  // Convert V0-V17 to numbers
+    },
+    "climbing-grade-asc": function(a, b) {
+        return a - b;
+    },
+    "climbing-grade-desc": function(a, b) {
+        return b - a;
+    }
+});
+
+$(document).ready(function() {
+    $('#bouldersTable').DataTable({
+        order: [[1, 'asc']], // Sort by grade by default, ascending
+        pageLength: 25,
+        language: {
+            search: "Buscar boulders:",
+            lengthMenu: "Exibir _MENU_ boulders por página",
+            info: "Exibindo _START_ a _END_ de _TOTAL_ boulders",
+            infoEmpty: "Nenhum boulder encontrado",
+            infoFiltered: "(filtrado de _MAX_ boulders totais)",
+            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+        },
+        columnDefs: [
+            {
+                targets: 1, // Grade column
+                type: 'climbing-grade'
+            },
+            {
+                targets: 4, // Tags column
+                orderable: false
+            },
+            {
+                targets: 5, // Actions column
+                orderable: false,
+                searchable: false
+            }
+        ]
+    });
+});
+</script>
+{% endblock %} 

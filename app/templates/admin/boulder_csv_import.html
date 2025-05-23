@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Import Boulders from CSV</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="csv_file" class="form-label">CSV File</label>
+      <input type="file" class="form-control" name="csv_file" accept=".csv" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Import</button>
+  </form>
+  <div class="mt-3">
+    <h5>CSV Format Example:</h5>
+    <pre>name,grade,description,block,tags
+Classic V3,V3,Great arete,Big Block,overhang, crimpy
+Roof Project,V8,Steep roof,Main Roof,roof, power
+    </pre>
+  </div>
+{% endblock %}

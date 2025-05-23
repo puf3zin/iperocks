@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{% if edit %}Edit{% else %}New{% endif %} Block</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" name="name" value="{{ block.name if edit else '' }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" name="description">{{ block.description if edit else '' }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label for="sector_id" class="form-label">Sector</label>
+      <select class="form-select" name="sector_id" required>
+        {% for sector in sectors %}
+          <option value="{{ sector.id }}"
+            {% if edit and block.sector_id == sector.id %}selected{% endif %}>
+            {{ sector.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Image</label>
+      <input type="file" class="form-control" name="image" accept="image/*">
+      {% if edit and block.image_path %}
+        <div class="mt-2">
+          <img src="{{ url_for('static', filename='uploads/' + block.image_path) }}" style="max-width:200px;" alt="Current image">
+        </div>
+      {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">{% if edit %}Update{% else %}Create{% endif %} Block</button>
+  </form>
+{% endblock %}
