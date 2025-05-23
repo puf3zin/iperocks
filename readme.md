@@ -14,7 +14,7 @@ A web application for managing and tracking climbing boulders, blocks, and secto
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/iperocks.git
+git clone https://github.com/puf3zin/iperocks.git
 cd iperocks
 ```
 
