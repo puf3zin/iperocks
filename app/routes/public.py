@@ -35,6 +35,11 @@ def boulder_detail(boulder_id):
                          user_attempts=user_attempts,
                          all_attempts=all_attempts)
 
+@bp.route('/sectors')
+def sectors():
+    sectors = Sector.query.order_by(Sector.name).all()
+    return render_template('public/sectors.html', sectors=sectors)
+
 @bp.route('/boulders')
 def boulders():
     boulders = Boulder.query.order_by(Boulder.grade).all()
