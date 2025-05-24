@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Escalamores{% endblock %}
+
+{% block head %}
+<link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Escalamores</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="usersTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Cadenas</th>
+                            <th>Flashes</th>
+                            <th>Tentativas</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.attempts|selectattr('status', 'in', ['Cadena', 'Flash'])|list|length }}</td>
+                            <td>{{ user.attempts|selectattr('status', 'equalto', 'Flash')|list|length }}</td>
+                            <td>{{ user.attempts|selectattr('status', 'equalto', 'Tentativa')|list|length }}</td>
+                            <td>
+                                <a href="{{ url_for('public.user_detail', username=user.username) }}" class="btn btn-primary">Ver Perfil</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#usersTable').DataTable({
+        order: [[1, 'desc']], // Sort by Cadenas by default
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+        }
+    });
+});
+</script>
+{% endblock %} 

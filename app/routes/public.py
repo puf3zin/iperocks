@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from app.models import Sector, Block, Boulder, Tag, Attempt
+from app.models import Sector, Block, Boulder, Tag, Attempt, User
 from flask_login import current_user, login_required
 from datetime import datetime
 from app import db
@@ -97,4 +97,41 @@ def delete_attempt(attempt_id):
     db.session.commit()
     
     flash('Attempt deleted successfully!', 'success')
-    return redirect(url_for('public.boulder_detail', boulder_id=attempt.boulder_id)) 
+    return redirect(url_for('public.boulder_detail', boulder_id=attempt.boulder_id))
+
+@bp.route('/users')
+def users():
+    users = User.query.order_by(User.username).all()
+    return render_template('public/users.html', users=users)
+
+@bp.route('/user/<username>')
+def user_detail(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    
+    # Get all attempts
+    all_attempts = Attempt.query.filter_by(user_id=user.id).order_by(Attempt.datetime.desc()).all()
+    
+    # Get sent boulders (Cadena or Flash)
+    sent_boulders = Attempt.query.filter_by(
+        user_id=user.id
+    ).filter(
+        Attempt.status.in_(['Cadena', 'Flash'])
+    ).order_by(Attempt.datetime.desc()).all()
+    
+    # Get flashes
+    flashes = Attempt.query.filter_by(
+        user_id=user.id,
+        status='Flash'
+    ).order_by(Attempt.datetime.desc()).all()
+    
+    # Get only "Tentativa" attempts
+    attempts = Attempt.query.filter_by(
+        user_id=user.id,
+        status='Tentativa'
+    ).order_by(Attempt.datetime.desc()).all()
+    
+    return render_template('public/user_detail.html',
+                         user=user,
+                         attempts=attempts,
+                         sent_boulders=sent_boulders,
+                         flashes=flashes) 

@@ -36,6 +36,7 @@ ENV/
 
 # Database
 *.sqlite
+*.db
 
 # Environment variables
 .env
